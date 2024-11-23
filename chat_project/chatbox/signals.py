@@ -15,6 +15,8 @@ model = "mistral-small-latest"
 from mistralai import Mistral
 import pandas as pd
 from backend.k_closest import *
+from backend.traduction import *
+from backend.prompt import *
 import json
 
 # Conversion de la colonne 'embeddings' en tableaux numpy
@@ -50,10 +52,12 @@ def process_user_input(sender, user_input, **kwargs):
     context = data.get('context', '')
     last_input = data.get('last_input', '')
     
-    index_closest = get_closest(user_input)
+    trad = traduction(last_input)
+    print("phrase traduite "+ trad)
+    
+    index_closest = get_closest(trad)
 
-
-    prompt = f"Tu es un assistant pour vendre essentiellement des produits alimentaires mais egalement des produits qu'on trouve dans des grandes surfaces comme carrefour, ici la demande du user est ({user_input}) et il se trouve que tu as le produit {products.iloc[index_closest]['name']} a lui proposer tu devras donc repondre au client de manière adéquat dans la même langue que sa requête, de confirmer ou non l'ajout du produit {products.iloc[index_closest]['name']} dans sa liste de course."
+    prompt = get_prompt(last_input, products.iloc[index_closest]["name"], context)
 
     chat_response = client.chat.complete(
          model = model,
