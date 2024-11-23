@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbox</title>
+    <script>
+        async function sendMessage() {
+            const message = document.getElementById('message').value; // Get user input
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value; // Get CSRF token
+            const chatDisplay = document.getElementById('chat-display');
+
+            const msg = document.createElement('div');
+            msg.textContent = `You: ${message}`;
+            chatDisplay.appendChild(msg);
+
+            // Send input to the server via POST
+            const response = await fetch("/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": csrfToken
+                },
+                body: `message=${encodeURIComponent(message)}`
+            });
+
+            // Parse the response and display it on the page
+            const result = await response.json();
+            const newMessage = document.createElement('div');
+            newMessage.textContent = `Chatbot: ${result.response}`; // Display user input
+            chatDisplay.appendChild(newMessage); // Add message to chat display
+
+            // Clear the input field
+            document.getElementById('message').value = '';
+        }
+    </script>
+</head>
+<body>
+    <h1>Chatbox</h1>
+    <form>
+        {% csrf_token %}
+        <input type="text" id="message" placeholder="Type your message">
+        <button type="button" onclick="sendMessage()">Send</button>
+    </form>
+    <div id="chat-display" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;">
+        <!-- Chat messages will appear here -->
+    </div>
+    <form action="/reset/" method="POST" style="margin-top: 20px;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Reset</button>
+    </form>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
