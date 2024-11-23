@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-
+#leonel est homo
 # Fonction pour calculer les distances euclidiennes : 
 # entrées: vecteur de base, matrice de vecteurs
 # return : tableau numpy des distances du vecteur à chaque point
