@@ -12,34 +12,17 @@ from mistralai import Mistral
 import sys
 api_key = "Ayt9pyjjA1Y2Tltpu85aUyJXu6EcflT8"
 model = "mistral-small-latest"
-import os
 from mistralai import Mistral
 import pandas as pd
+from backend.k_closest import *
 
+# Conversion de la colonne 'embeddings' en tableaux numpy
+# Chaque vecteur est représenté comme une chaîne de caractères dans le CSV
 products = pd.read_csv('chatbox/data/products.csv')
 products['embeddings'] = products['embeddings'].apply(lambda x: np.fromstring(x[1:-1], sep=','))
 
 
-def euclidean_distances(vector, matrix):
-  tab = []
-  for i in range(len(matrix)):
-    tab.append(np.linalg.norm(vector - matrix[i]))
-  tab = np.array(tab)
-  return tab
-
-def k_nearest_neighbors_with_indices(reference_vector, vectors, k):
-    reference_vector = np.array(reference_vector)
-    vectors = np.array(vectors)
-
-    distances = euclidean_distances(reference_vector, vectors).flatten()
-
-    nearest_indices = np.argsort(distances)[:k]
-
-    nearest_vectors = vectors[nearest_indices]
-    nearest_distances = distances[nearest_indices]
-
-    return nearest_indices
-
+# Fonction pour récupérer le produit le plus proche en fonction de l'entrée utilisateur
 def get_closest(user_input):
     model = "mistral-embed"
     client_loc = Mistral(api_key=api_key)
