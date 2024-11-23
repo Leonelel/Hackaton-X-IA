@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .signals import user_input_received
+import json
 
 def index(request):
     if request.method == 'POST':
@@ -10,7 +11,11 @@ def index(request):
 
         # Emit the signal and capture the result
         signal_result = {}
-        ans = user_input_received.send(sender=None, user_input=request.session['context'], result=signal_result)
+        signal_data = json.dumps({
+            'context': request.session['context'],
+            'last_input': user_input
+        })
+        ans = user_input_received.send(sender=None, user_input=signal_data, result=signal_result)
 
         request.session['context'] += 'Chatbot: ' + ans[0][1] + '\n'
         # Return the result to the frontend

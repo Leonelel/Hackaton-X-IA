@@ -15,6 +15,7 @@ model = "mistral-small-latest"
 from mistralai import Mistral
 import pandas as pd
 from backend.k_closest import *
+import json
 
 # Conversion de la colonne 'embeddings' en tableaux numpy
 # Chaque vecteur est représenté comme une chaîne de caractères dans le CSV
@@ -42,7 +43,13 @@ def process_user_input(sender, user_input, **kwargs):
     print(f"Processing user input: {user_input} \n")  # Log input for debugging
     # Example logic: calculate the square of a number
     client = Mistral(api_key=api_key)
+    # Deserialize the user_input string
+    data = json.loads(user_input)
 
+    
+    context = data.get('context', '')
+    last_input = data.get('last_input', '')
+    
     index_closest = get_closest(user_input)
 
 
