@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from backend.call import *
 products = pd.read_csv('chatbox/data/products.csv')
-products = products.iloc[:1000, :]
+products = products.iloc[:, :]
 products['embeddings'] = products['embeddings'].apply(lambda x: np.fromstring(x[1:-1], sep=','))
 #leonel est homo
 # Fonction pour calculer les distances euclidiennes : 
