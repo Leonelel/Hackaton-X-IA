@@ -27,17 +27,6 @@ products['embeddings'] = products['embeddings'].apply(lambda x: np.fromstring(x[
 
 
 # Fonction pour récupérer le produit le plus proche en fonction de l'entrée utilisateur
-def get_closest(user_input):
-    model = "mistral-embed"
-    client_loc = Mistral(api_key=api_key)
-
-    embeddings_batch_response = client_loc.embeddings.create(
-        model=model,
-        inputs=[user_input],
-    )
-
-    k_neighbors = k_nearest_neighbors_with_indices(embeddings_batch_response.data[0].embedding, products["embeddings"], 1)
-    return k_neighbors[0]
 
 # Receiver function to handle the signal
 @receiver(user_input_received)
