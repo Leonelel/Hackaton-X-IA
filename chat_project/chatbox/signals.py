@@ -11,12 +11,13 @@ from .signals import user_input_received
 from mistralai import Mistral
 import sys
 api_key = "Ayt9pyjjA1Y2Tltpu85aUyJXu6EcflT8"
-model = "mistral-small-latest"
+model = "open-mistral-7b"
 from mistralai import Mistral
 import pandas as pd
 from backend.k_closest import *
 from backend.traduction import *
 from backend.prompt import *
+from backend.call import *
 import json
 
 # Conversion de la colonne 'embeddings' en tableaux numpy
@@ -48,16 +49,26 @@ def process_user_input(sender, user_input, **kwargs):
     # Deserialize the user_input string
     data = json.loads(user_input)
 
-    
+    #Garde le contexte précédent
     context = data.get('context', '')
     last_input = data.get('last_input', '')
     
+    #Phrase traduite
     trad = traduction(last_input)
     print("phrase traduite "+ trad)
     
+    
+    #Index du plus proche point
     index_closest = get_closest(trad)
+    
+    #Liste de mots clés à chercher dans la base de données:
+    key_words = call(get_prompt_liste(trad), "open-mistral-7b")
+    print("les mots clés sont : "+ key_words)
+    
+    name = products.iloc[index_closest]["name"]
+    price = products.iloc[index_closest]["price"]
 
-    prompt = get_prompt(last_input, products.iloc[index_closest]["name"], context)
+    prompt = get_prompt(last_input, name, context)
 
     chat_response = client.chat.complete(
          model = model,
@@ -68,8 +79,6 @@ def process_user_input(sender, user_input, **kwargs):
              },
          ]
      )
-    result = chat_response.choices[0].message.content
-    print(result)
+    model_output = chat_response.choices[0].message.content
 
-    kwargs['result'] = result
-    return result
+    return {'model_output': model_output, 'item': {'name': name , 'price': price}}
