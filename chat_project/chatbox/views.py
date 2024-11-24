@@ -24,6 +24,8 @@ def index(request):
         request.session['context'] += 'Chatbot: ' + model_output + '\n'
         return JsonResponse({'response': model_output, 'question': user_input, 'item': {'name': item_name, 'price': item_price}})
 
+    if request.method == 'GET':
+        reset(request)
     return render(request, 'chatbox/index.html')
 
 

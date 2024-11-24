@@ -55,6 +55,7 @@ def process_user_input(sender, user_input, **kwargs):
     print("les mots clés sont : "+ key_words)
     
     name = products.iloc[index_closest]["name"]
+    name = traduction(name, langue='français')
     price = products.iloc[index_closest]["price"]
 
     prompt = get_prompt(last_input, name, context)
