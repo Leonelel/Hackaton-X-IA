@@ -24,10 +24,20 @@ body {
     padding: 15px;
 }
 
+.mt-1 {
+    margin-top: 0; /* Supprime la marge au-dessus du formulaire */
+    position: relative; /* Position relative au conteneur parent */
+    top: -75px; /* Ajuste la position vers le haut pour coller à la chatbox */
+}
+
+
+
+
+
 /* Chat Display styling */
 .chat-display {
     width: 800px; /* Largeur fixe */
-    height: 500px; /* Hauteur fixe */
+    height: 400px; /* Hauteur fixe */
     overflow-y: auto;
     background-color: #fff9e6; /* Fond jaune très clair */
     border: 2px solid #ffc107; /* Bordure jaune vif */
@@ -141,7 +151,7 @@ button:hover {
 /* Cart Section Styling */
 #cart-section {
     width: 350px; /* Largeur fixe */
-    height: 500px; /* Hauteur fixe */
+    height: 400px; /* Hauteur fixe */
     overflow-y: auto;
     background-color: #fff9e6; /* Fond jaune très clair */
     border: 2px solid #ffc107; /* Bordure jaune vif */
