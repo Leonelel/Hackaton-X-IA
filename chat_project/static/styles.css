@@ -1,0 +1,186 @@
+/* Body background */
+body {
+    background: linear-gradient(135deg, #d4f8e8, #a6e3b6); /* Fond vert clair en dégradé */
+    font-family: 'Segoe UI', Arial, sans-serif;
+    color: #344e41; /* Couleur de texte pour contraster avec le fond */
+    margin: 0;
+    padding: 0;
+}
+
+/* General container styling */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Layout adjustments */
+.row {
+    display: flex;
+    gap: 20px;
+}
+
+.col-md-8, .col-md-4 {
+    padding: 15px;
+}
+
+/* Chat Display styling */
+.chat-display {
+    width: 800px; /* Largeur fixe */
+    height: 500px; /* Hauteur fixe */
+    overflow-y: auto;
+    background-color: #f9fff6; /* Fond clair pour le chat */
+    border: 2px solid #81c784; /* Bordure verte */
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    scroll-behavior: smooth;
+}
+
+/* Chat messages styling */
+.chat-message {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    max-width: 70%;
+    word-wrap: break-word;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* User messages */
+.user-message {
+    background-color: #aed581; /* Vert clair pour les messages utilisateur */
+    color: #ffffff;
+    margin-left: auto;
+    text-align: right;
+}
+
+/* Bot messages */
+.bot-message {
+    background-color: #c8e6c9; /* Vert plus doux pour les réponses du bot */
+    color: #2e7d32;
+    margin-right: auto;
+    text-align: left;
+    display: flex;
+    align-items: center;
+}
+
+/* Input and button styling */
+input#message {
+    border: 2px solid #81c784;
+    background-color: #f1fff0;
+    color: #344e41;
+    border-radius: 25px;
+    padding: 10px 20px;
+    width: calc(100% - 100px);
+    transition: all 0.3s ease;
+}
+
+input#message:focus {
+    border: 2px solid #4caf50;
+    outline: none;
+    box-shadow: 0 0 10px #81c784;
+}
+
+button {
+    background-color: #66bb6a; /* Vert moyen */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #4caf50; /* Vert foncé */
+}
+
+/* Cart Section Styling */
+#cart-section {
+    width: 350px; /* Largeur fixe */
+    height: 500px; /* Hauteur fixe */
+    overflow-y: auto;
+    background-color: #f1fff0; /* Fond clair pour le panier */
+    border: 2px solid #81c784; /* Bordure verte */
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Espace entre les éléments */
+}
+
+#cart-items {
+    width: 100%; /* Prend toute la largeur disponible */
+    flex-grow: 1; /* Permet à la liste de s'étendre */
+    overflow-y: auto; /* Active le défilement si nécessaire */
+    background-color: #e8f5e9; /* Vert doux pour la liste des articles */
+    border: 1px solid #81c784;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#cart-total {
+    color: #388e3c;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+button.btn-danger {
+    background-color: #e57373;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button.btn-danger:hover {
+    background-color: #d32f2f; /* Rouge plus foncé pour effet hover */
+}
+
+/* Scrollbar styling */
+.chat-display::-webkit-scrollbar,
+#cart-items::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-display::-webkit-scrollbar-thumb,
+#cart-items::-webkit-scrollbar-thumb {
+    background: #81c784;
+    border-radius: 3px;
+}
+
+/* Flexbox for alignment */
+.d-flex {
+    display: flex;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+.ms-4 {
+    margin-left: 1.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+
+    #cart-section {
+        width: 100%; /* Prend toute la largeur sur mobile */
+        margin-top: 10px;
+        height: auto; /* Hauteur ajustable sur petits écrans */
+    }
+
+    .col-md-4, .col-md-8 {
+        padding: 10px;
+    }
+}
