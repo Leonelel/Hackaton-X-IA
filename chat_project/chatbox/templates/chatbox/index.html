@@ -1,98 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     {% load static %}
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Assistant Chatbox</title>
+    <title>Assistant de Courses</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    
+
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <script>
-        let cart = []; // Local cart
+        let cart = []; // Panier local
 
-        // Add an item to the cart
+        // Ajouter un article au panier
         async function addToCart(itemName, itemPrice) {
-            const response = await fetch('/add_to_cart/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                },
-                body: `item_name=${encodeURIComponent(itemName)}&item_price=${encodeURIComponent(itemPrice)}`,
-            });
-            const result = await response.json();
-            displayCart(result.cart);
+            const existingItem = cart.find(item => item.name === itemName);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ name: itemName, price: itemPrice, quantity: 1 });
+            }
+            displayCart();
         }
 
-        // Display cart items
-        function displayCart(cartItems) {
+        // Afficher les articles du panier
+        function displayCart() {
             const cartList = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total');
-
             cartList.innerHTML = '';
             let total = 0;
 
-            cartItems.forEach((item, index) => {
+            cart.forEach((item, index) => {
                 const li = document.createElement('li');
-                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.className = 'list-group-item d-flex justify-content-between align-items-center bg-white text-dark rounded-3';
 
-                // Affiche le nom et le prix de l'article
-                li.innerHTML = `${item.name} - $${parseFloat(item.price).toFixed(2)}`;
+                li.innerHTML = `
+                    <span>${item.name} (x${item.quantity})</span>
+                    <strong>${(item.price * item.quantity).toFixed(2)} €</strong>
+                `;
 
-                const removeButton = document.createElement('button');
-                removeButton.className = 'btn btn-sm btn-danger';
-                removeButton.textContent = 'Remove';
-                removeButton.onclick = () => removeFromCart(index);
+                // Ajouter les boutons "+" et "-"
+                const quantityControls = document.createElement('div');
+                quantityControls.className = 'd-flex align-items-center gap-2';
 
-                li.appendChild(removeButton);
+                const increaseButton = document.createElement('button');
+                increaseButton.className = 'btn btn-sm btn-success';
+                increaseButton.textContent = '+';
+                increaseButton.onclick = () => updateQuantity(index, 1);
+
+                const decreaseButton = document.createElement('button');
+                decreaseButton.className = 'btn btn-sm btn-warning';
+                decreaseButton.textContent = '-';
+                decreaseButton.onclick = () => updateQuantity(index, -1);
+
+                quantityControls.appendChild(increaseButton);
+                quantityControls.appendChild(decreaseButton);
+                li.appendChild(quantityControls);
+
                 cartList.appendChild(li);
 
-                // Ajout du prix au total
-                total += parseFloat(item.price);
+                total += item.price * item.quantity;
             });
 
-            // Affiche le total mis à jour
-            cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+            cartTotal.textContent = `Total : ${total.toFixed(2)} €`;
         }
 
-        // Remove an item from the cart
+        // Mettre à jour la quantité d'un article
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1); // Supprimer l'article si la quantité tombe à zéro
+            }
+            displayCart();
+        }
+
+        // Supprimer un article du panier
         async function removeFromCart(index) {
-            const response = await fetch('/remove_from_cart/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                },
-                body: `index=${index}`,
-            });
-            const result = await response.json();
-            displayCart(result.cart); // Met à jour le panier affiché
+            cart.splice(index, 1);
+            displayCart();
         }
 
-        // Clear the cart
+        // Vider le panier
         async function clearCart() {
-            const response = await fetch('/clear_cart/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                },
-            });
-            const result = await response.json();
-            displayCart(result.cart); // Le total sera automatiquement recalculé dans displayCart
+            cart = [];
+            displayCart();
         }
 
-        // Send message to chatbot and handle response
+        // Afficher un message lettre par lettre
+        function typeText(element, text, speed = 15) {
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text[i];
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Ajouter un message initial du bot
+        function displayInitialMessage() {
+            const chatDisplay = document.getElementById('chat-display');
+            const botMsg = document.createElement('div');
+            botMsg.className = 'chat-message bot-message';
+            chatDisplay.appendChild(botMsg);
+
+            typeText(botMsg, 'Bonjour, de quoi avez-vous besoin ?', 15);
+        }
+
+        // Envoyer un message au chatbot et gérer la réponse
         async function sendMessage() {
             const message = document.getElementById('message').value.trim();
             if (!message) return;
@@ -118,10 +143,10 @@
 
             const botMsg = document.createElement('div');
             botMsg.className = 'chat-message bot-message';
-            botMsg.textContent = result.response;
             chatDisplay.appendChild(botMsg);
 
-            // Automatically add the item to the cart with its name and price
+            typeText(botMsg, result.response, 15);
+
             if (result.item) {
                 addToCart(result.item.name, result.item.price);
             }
@@ -130,11 +155,29 @@
             chatDisplay.scrollTop = chatDisplay.scrollHeight;
         }
 
-        // Handle Enter key press for message input
+        // Gérer la touche "Entrée" pour envoyer un message
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
                 event.preventDefault();
                 sendMessage();
+            }
+        }
+
+        // Charger le message initial lors du chargement de la page
+        window.onload = displayInitialMessage;
+
+        // Fonction pour commander
+        function placeOrder() {
+            const confirmationMessage = document.getElementById('confirmation-message');
+            if (cart.length > 0) {
+                confirmationMessage.textContent = 'Votre commande a été passée avec succès !';
+                confirmationMessage.classList.add('text-success');
+                confirmationMessage.classList.remove('text-danger');
+                clearCart();
+            } else {
+                confirmationMessage.textContent = 'Votre panier est vide. Ajoutez des articles pour passer une commande.';
+                confirmationMessage.classList.add('text-danger');
+                confirmationMessage.classList.remove('text-success');
             }
         }
     </script>
@@ -142,44 +185,40 @@
 
 <body class="bg-light">
     <div class="container py-5">
-        <div class="row">
-            <!-- Chat Section -->
-            <div class="col-md-12">
-                <!-- Logo and Title -->
-                <div class="text-center mb-4">
-                    <img src="{% static 'chatbox/image.png' %}" alt="Shopping Assistant Logo" class="mb-3" style="width: 150px; border-radius: 50%;">
-                    <h1 class="text-primary">Shopping Assistant Chatbox</h1>
-                    <p class="text-secondary">Your smart assistant for seamless grocery shopping</p>
-                </div>
+        <div class="text-center mb-4">
+            <img src="{% static 'chatbox/image.png' %}" alt="Logo de l'Assistant de Courses" class="mb-3" style="width: 150px; border-radius: 50%;">
+            <h1 class="text-success">Assistant de Courses</h1>
+            <p class="text-muted">La manière la plus simple de faire vos courses grâce à des suggestions intelligentes.</p>
+        </div>
+
+        <div class="d-flex" style="gap: 20px; height: 500px;">
+            <!-- Affichage des messages -->
+            <div id="chat-display" class="chat-display p-3 border rounded shadow-sm flex-grow-1 me-4" style="overflow-y: auto;">
+                <!-- Les messages apparaîtront ici -->
             </div>
 
-            <div class="col-md-12 d-flex" style="height: 500px;">
-                <!-- Chat Display -->
-                <div id="chat-display" class="chat-display p-3 border rounded bg-white shadow-sm flex-grow-1 me-4" style="overflow-y: auto;">
-                    <!-- Chat messages will dynamically appear here -->
+            <!-- Section du Panier -->
+            <div id="cart-section" class="border rounded bg-light p-3" style="width: 350px; overflow-y: auto;">
+                <h2 class="text-success">Votre Panier</h2>
+                <ul id="cart-items" class="list-group flex-grow-1 overflow-auto mb-3">
+                    <!-- Les articles du panier apparaîtront ici -->
+                </ul>
+                <div class="d-flex align-items-center justify-content-between">
+                    <p id="cart-total" class="fw-bold text-success">Total : 0,00 €</p>
+                    <button class="btn btn-success" onclick="placeOrder()">Commander</button>
                 </div>
-
-                <!-- Cart Section -->
-                <div id="cart-section" class="ms-4 border rounded bg-dark text-light d-flex flex-column p-3" style="width: 350px; overflow-y: auto;">
-                    <h2>Your Cart</h2>
-                    <ul id="cart-items" class="list-group flex-grow-1 overflow-auto mb-3">
-                        <!-- Cart items will be displayed here -->
-                    </ul>
-                    <div>
-                        <p id="cart-total" class="fw-bold">Total: $0.00</p>
-                        <button class="btn btn-danger" onclick="clearCart()">Clear Cart</button>
-                    </div>
-                </div>
+                <button class="btn btn-danger w-100 mt-2" onclick="clearCart()">Vider le panier</button>
+                <p id="confirmation-message" class="mt-3 fw-bold"></p>
             </div>
+        </div>
 
-            <!-- Message Input -->
-            <div class="col-md-12 mt-3">
-                <form class="d-flex align-items-center gap-2">
-                    {% csrf_token %}
-                    <input type="text" id="message" class="form-control" placeholder="Type your message" onkeydown="handleKeyPress(event)" required>
-                    <button type="button" class="btn btn-primary" onclick="sendMessage()">Send</button>
-                </form>
-            </div>
+        <!-- Champ de saisie -->
+        <div class="mt-3">
+            <form class="d-flex align-items-center gap-2">
+                {% csrf_token %}
+                <input type="text" id="message" class="form-control" placeholder="Écrivez votre demande ici..." onkeydown="handleKeyPress(event)" required>
+                <button type="button" class="btn btn-success" onclick="sendMessage()">Envoyer</button>
+            </form>
         </div>
     </div>
 
