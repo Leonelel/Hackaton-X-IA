@@ -1,8 +1,8 @@
 /* Body background */
 body {
-    background: linear-gradient(135deg, #d4f8e8, #a6e3b6); /* Fond vert clair en dégradé */
+    background: linear-gradient(135deg, #fff7e0, #ffd58e); /* Dégradé doux jaune clair */
     font-family: 'Segoe UI', Arial, sans-serif;
-    color: #344e41; /* Couleur de texte pour contraster avec le fond */
+    color: #5a4e3d; /* Texte contrasté brun clair */
     margin: 0;
     padding: 0;
 }
@@ -29,8 +29,8 @@ body {
     width: 800px; /* Largeur fixe */
     height: 500px; /* Hauteur fixe */
     overflow-y: auto;
-    background-color: #f9fff6; /* Fond clair pour le chat */
-    border: 2px solid #81c784; /* Bordure verte */
+    background-color: #fff9e6; /* Fond jaune très clair */
+    border: 2px solid #ffc107; /* Bordure jaune vif */
     border-radius: 10px;
     padding: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -52,27 +52,66 @@ body {
 
 /* User messages */
 .user-message {
-    background-color: #aed581; /* Vert clair pour les messages utilisateur */
-    color: #ffffff;
+    background-color: #ffd966; /* Jaune lumineux pour messages utilisateur */
+    color: #5a4e3d;
     margin-left: auto;
     text-align: right;
 }
 
 /* Bot messages */
 .bot-message {
-    background-color: #c8e6c9; /* Vert plus doux pour les réponses du bot */
-    color: #2e7d32;
+    background-color: #ffeeba; /* Jaune pastel pour les réponses du bot */
+    color: #5a4e3d;
     margin-right: auto;
     text-align: left;
     display: flex;
     align-items: center;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Animation for text */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.typing-effect {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 3px solid #5a4e3d; /* Curseur */
+    animation: typing 2s steps(40, end), blink 0.5s step-end infinite alternate;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes blink {
+    from {
+        border-color: transparent;
+    }
+    to {
+        border-color: #5a4e3d;
+    }
 }
 
 /* Input and button styling */
 input#message {
-    border: 2px solid #81c784;
-    background-color: #f1fff0;
-    color: #344e41;
+    border: 2px solid #ffc107;
+    background-color: #fff9e6;
+    color: #5a4e3d;
     border-radius: 25px;
     padding: 10px 20px;
     width: calc(100% - 100px);
@@ -80,13 +119,13 @@ input#message {
 }
 
 input#message:focus {
-    border: 2px solid #4caf50;
+    border: 2px solid #e0a800;
     outline: none;
-    box-shadow: 0 0 10px #81c784;
+    box-shadow: 0 0 10px #ffc107;
 }
 
 button {
-    background-color: #66bb6a; /* Vert moyen */
+    background-color: #ffa000; /* Bouton jaune-orangé */
     color: white;
     padding: 10px 20px;
     border: none;
@@ -96,7 +135,7 @@ button {
 }
 
 button:hover {
-    background-color: #4caf50; /* Vert foncé */
+    background-color: #ff8f00; /* Jaune-orangé plus foncé */
 }
 
 /* Cart Section Styling */
@@ -104,39 +143,61 @@ button:hover {
     width: 350px; /* Largeur fixe */
     height: 500px; /* Hauteur fixe */
     overflow-y: auto;
-    background-color: #f1fff0; /* Fond clair pour le panier */
-    border: 2px solid #81c784; /* Bordure verte */
+    background-color: #fff9e6; /* Fond jaune très clair */
+    border: 2px solid #ffc107; /* Bordure jaune vif */
     border-radius: 10px;
     padding: 15px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Espace entre les éléments */
+    justify-content: space-between; /* Distribue les éléments */
 }
 
 #cart-items {
     width: 100%; /* Prend toute la largeur disponible */
     flex-grow: 1; /* Permet à la liste de s'étendre */
-    overflow-y: auto; /* Active le défilement si nécessaire */
-    background-color: #e8f5e9; /* Vert doux pour la liste des articles */
-    border: 1px solid #81c784;
+    overflow-y: auto;
+    background-color: #fff4d6; /* Fond doux pour les articles */
+    border: 1px solid #ffc107;
     border-radius: 10px;
     padding: 10px;
 }
 
-#cart-total {
-    color: #388e3c;
-    font-size: 18px;
-    margin-top: 10px;
+/* Styling for "+" and "-" buttons */
+button.btn-success {
+    background-color: #28a745; /* Vert pour le bouton "+" */
+    border: none;
+    transition: background-color 0.3s ease;
 }
 
+button.btn-success:hover {
+    background-color: #218838; /* Vert plus foncé pour effet hover */
+}
+
+button.btn-warning {
+    background-color: #ffc107; /* Jaune pour le bouton "-" */
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button.btn-warning:hover {
+    background-color: #e0a800; /* Jaune plus foncé pour effet hover */
+}
+
+/* Styling for "Vider le panier" button */
 button.btn-danger {
-    background-color: #e57373;
+    background-color: #e57373; /* Rouge clair pour contraste */
     border: none;
     transition: background-color 0.3s ease;
 }
 
 button.btn-danger:hover {
     background-color: #d32f2f; /* Rouge plus foncé pour effet hover */
+}
+
+#cart-total {
+    color: #e0a800; /* Couleur jaune-orangé pour le total */
+    font-size: 18px;
+    margin-top: 10px;
 }
 
 /* Scrollbar styling */
@@ -147,7 +208,7 @@ button.btn-danger:hover {
 
 .chat-display::-webkit-scrollbar-thumb,
 #cart-items::-webkit-scrollbar-thumb {
-    background: #81c784;
+    background: #ffc107;
     border-radius: 3px;
 }
 
