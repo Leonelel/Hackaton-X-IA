@@ -7,5 +7,3 @@ def traduction(chaine_de_caractere, langue='espagnol'):
     prompt = f"Traduis moi la phrase en {langue}:'"+ chaine_de_caractere + f"'. le return doit etre uniquement la phrase en {langue}. "
     trad = call(prompt)
     return trad
-    
-    

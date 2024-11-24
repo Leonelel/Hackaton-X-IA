@@ -6,23 +6,27 @@ import json
 def index(request):
     if request.method == 'POST':
         user_input = request.POST.get('message', 'BABABBABABA')
-        context = request.session.get('context', '')
-        request.session['context'] = context + 'User: ' + user_input + '\n'
+        context = request.session.get('context', [])
 
         # Emit the signal and capture the result
         signal_result = {}
         signal_data = json.dumps({
-            'context': request.session['context'],
+            'context': context,
             'last_input': user_input,
             'cart': request.session.get('cart', [])
         })
         ans = user_input_received.send(sender=None, user_input=signal_data, result=signal_result)
-        model_output = ans[0][1]['model_output']
-        item_name = ans[0][1]['item']['name']
-        item_price = ans[0][1]['item']['price']
 
-        request.session['context'] += 'Chatbot: ' + model_output + '\n'
-        return JsonResponse({'response': model_output, 'question': user_input, 'item': {'name': item_name, 'price': item_price}})
+        model_output = ans[0][1]['model_output']
+        items = ans[0][1]['items']
+
+        context.append({'user_input': user_input, 'model_output': model_output})
+
+        request.session['context'] = context
+        request.session.modified = True
+
+#        return JsonResponse({'response': model_output, 'question': user_input, 'items': items})
+        return JsonResponse({'response': model_output, 'question': user_input, 'item': items[0]})
 
     if request.method == 'GET':
         reset(request)

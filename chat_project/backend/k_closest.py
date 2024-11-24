@@ -23,8 +23,7 @@ def get_closest(user_input):
   products = pd.read_csv('chatbox/data/products.csv')
   products['embeddings'] = products['embeddings'].apply(lambda x: np.fromstring(x[1:-1], sep=','))
 
-  k_neighbors = k_nearest_neighbors_with_indices(embeddings_batch_response.data[0].embedding, products["embeddings"],
-                                                 1)
+  k_neighbors = k_nearest_neighbors_with_indices(embeddings_batch_response.data[0].embedding, products["embeddings"],1)
   return k_neighbors[0]
 
 
@@ -43,5 +42,8 @@ def k_indices(liste, vectors):
     tab.append(k_nearest_neighbors_with_indices(i,vectors,1)[0])
   return tab
             
-  
+def get_lists(raw_lists):
+  main_list = [get_closest(elt) for elt in raw_lists['liste_produits']]
+  rec_list = [get_closest(elt) for elt in raw_lists['liste_recos']]
+  return (main_list, rec_list)
   
