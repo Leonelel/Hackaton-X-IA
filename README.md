@@ -72,7 +72,7 @@ La réponse générée est affichée à l'utilisateur, avec un soin particulier 
 
 
 # Mode d'emploi
-
+## Vidéo mode d'emploi : https://youtu.be/J10rSmzz0Gs
 ## Run l'application:
  - run <code> pip install -r requirements.txt </code>
  - télécharger le fichier *products.csv* et le déplacer dans le dossier *chatbox/data*
