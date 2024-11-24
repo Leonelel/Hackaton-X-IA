@@ -24,16 +24,15 @@ import json
 # Conversion de la colonne 'embeddings' en tableaux numpy
 # Chaque vecteur est représenté comme une chaîne de caractères dans le CSV
 products = pd.read_csv('chatbox/data/products.csv')
+products = products.iloc[:1000, :]
 products['embeddings'] = products['embeddings'].apply(lambda x: np.fromstring(x[1:-1], sep=','))
 
 # Receiver function to handle the signal
 @receiver(user_input_received)
 def process_user_input(sender, user_input, **kwargs):
     # Deserialize the user_input string
-    
-    print('ETAPE15')
+
     data = json.loads(user_input)
-    print('ETAPE2')
     #On récupère toutes les données utiles : context, last_input, cart
     context = data.get('context', '')
     last_input = data.get('last_input', '')
@@ -47,16 +46,19 @@ def process_user_input(sender, user_input, **kwargs):
     raw_lists = prod_lists(products, context, last_input)
     ####ici je convertis pour tous les objets en celui que je trouve dans la base de donnée
     ###
-
+    print("0")
     main_list_indexes, rec_list_indexes = get_lists(raw_lists)
+    print("1")
     main_list = [{'name': traduction(products.iloc[index]["name"], 'français'), 'price': products.iloc[index]["price"]} for index in main_list_indexes]
     rec_list = [{'name': traduction(products.iloc[index]["name"], 'français'), 'price': products.iloc[index]["price"]} for index in rec_list_indexes]
+    print("2")
     liste_principale = [elt['name'] for elt in main_list]
     liste_complementaire = [elt['name'] for elt in rec_list]
     ########### ici peut être garder la main list et juste la str ?????? 
     prompt_chat = get_prompt(last_input, str(context), str(liste_principale), str(liste_complementaire), str(cart))
+    print("3")
     model_output = call(prompt_chat)
-
+    print("4")
 
 ###############################################################"
 # "
