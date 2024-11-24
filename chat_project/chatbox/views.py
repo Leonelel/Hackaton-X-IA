@@ -40,7 +40,7 @@ def index(request):
                 })
 
         request.session.modified = True
-
+        print(items)
         return JsonResponse({'response': model_output, 'question': user_input, 'items': items})
 
     if request.method == 'GET':

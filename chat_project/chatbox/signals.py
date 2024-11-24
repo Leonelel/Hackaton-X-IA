@@ -41,12 +41,9 @@ def process_user_input(sender, user_input, **kwargs):
     raw_lists = prod_lists(products, context, last_input)
     ####ici je convertis pour tous les objets en celui que je trouve dans la base de donnée
 
-    print("0")
     main_list_indexes, rec_list_indexes = get_lists(raw_lists)
-    print("1")
     main_list = [{'name': traduction(products.iloc[index]["name"], 'français'), 'price': products.iloc[index]["price"]} for index in main_list_indexes]
     rec_list = [{'name': traduction(products.iloc[index]["name"], 'français'), 'price': products.iloc[index]["price"]} for index in rec_list_indexes]
-    print("2")
     liste_principale = [elt['name'] for elt in main_list]
     liste_complementaire = [elt['name'] for elt in rec_list]
     ########### ici peut être garder la main list et juste la str ?????? 
@@ -54,9 +51,7 @@ def process_user_input(sender, user_input, **kwargs):
     print("Listes de produits finaux en gros : ")
     print(liste_principale)
     print(liste_complementaire)
-    print("3")
     model_output = call(prompt_chat)
-    print("4")
 
 ###############################################################"
 # "
