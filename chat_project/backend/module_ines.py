@@ -38,9 +38,13 @@ def prod_lists(products, context, last_input):
 # Create DataFrame
   df = pd.DataFrame(data)
   to_send = []
+  """
   for el in context:
     to_send.append({'role':'user', 'content':el['user']})
     to_send.append({'role':'assistant', 'content':el['model']})
+"""
+  if(len(context)!=0):
+    to_send.append({'role':'assistant', 'content':context[-1]['model']})
   to_send.append({'role':'user', 'content':last_input}) 
   print("COUCOU BANDE DE NOUILLES")
 
@@ -49,17 +53,17 @@ def prod_lists(products, context, last_input):
           "type": "function",
           "function": {
               "name": "get_vectors_prod_et_reco",
-              "description": "Transforms two lists of grocery products into vectors. The first list is a list of products desired by the customer. For example, if the customer wants ingredients to bake a cake, its argument should look like [\"eggs\", \"flour\",\"sugar\"]. The second list is a list of recommended products",
+              "description": "Transforms two lists of grocery products into vectors. The first list is a list of products desired by the customer. For example, if the customer wants ingredients to bake a cake, the list should look like [\"eggs\", \"flour\",\"sugar\"]. The second list is a list of recommended products. For example, if the user wants spaghetti, the list should look like [\"cheese\", \"tomato sauce\",\"pesto\"]",
               "parameters": {
                   "type": "object",
                   "properties": {
                       "user_input": {
                           "type": "array",
-                          "description": "Liste des produits spécifiquement demandés par l'utilisateur.",
+                          "description": "Liste des produits demandés par l'utilisateur, ce sont des produits considérés pertinents par rapport à sa demande",
                       },
                       "user_input_reco": {
                           "type": "array",
-                          "description": "Liste des produits recommandés en fonction des besoins de l'utilisateur.",
+                          "description": "Liste des produits recommandés en fonction des besoins de l'utilisateur, pertinents vis-à-vis de sa demande. On veut lui vendre des choses, donc il faut essayer de lui proposer des aliments les plus pertinents possibles",
                       }
                   },
                   "required": ["user_input", "user_input_reco"],  # Spécifie que ces deux paramètres sont obligatoires
