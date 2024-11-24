@@ -13,7 +13,8 @@ def index(request):
         signal_result = {}
         signal_data = json.dumps({
             'context': request.session['context'],
-            'last_input': user_input
+            'last_input': user_input,
+            'cart': request.session.get('cart', [])
         })
         ans = user_input_received.send(sender=None, user_input=signal_data, result=signal_result)
         model_output = ans[0][1]['model_output']

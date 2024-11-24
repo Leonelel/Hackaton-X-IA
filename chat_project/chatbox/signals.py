@@ -37,7 +37,6 @@ def get_closest(user_input):
     )
 
     k_neighbors = k_nearest_neighbors_with_indices(embeddings_batch_response.data[0].embedding, products["embeddings"], 1)
-    print("LINDEX " + products.iloc[k_neighbors[0]]["name"])
     return k_neighbors[0]
 
 # Receiver function to handle the signal
@@ -52,6 +51,7 @@ def process_user_input(sender, user_input, **kwargs):
     #Garde le contexte précédent
     context = data.get('context', '')
     last_input = data.get('last_input', '')
+    cadis = data.get('cart', [])
     
     #Phrase traduite
     trad = traduction(last_input)
