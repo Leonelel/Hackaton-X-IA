@@ -20,7 +20,7 @@ def index(request):
         model_output = ans[0][1]['model_output']
         items = ans[0][1]['items']
 
-        context.append({'user_input': user_input, 'model_output': model_output})
+        context.append({'user': user_input, 'model': model_output})
 
         request.session['context'] = context
         request.session.modified = True
